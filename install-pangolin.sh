@@ -2,12 +2,10 @@
 # À lancer en root sur ta LXC de lab.
 set -e
 
-# Utilisateur admin non-root, plus propre que de tout faire en root.
-if ! id -u proxuser >/dev/null 2>&1; then
-  apt-get update -qq && apt-get install -y -qq sudo >/dev/null
-  useradd -m -s /bin/bash -G sudo proxuser
-  echo 'proxuser:ProxFibreLab2026!' | chpasswd
-fi
+# Le template désactive l'auth par mot de passe SSH par défaut.
+sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+systemctl restart ssh
 
 mkdir -p /opt/pangolin && cd /opt/pangolin
 curl -fsSL https://static.pangolin.net/get-installer.sh | bash
