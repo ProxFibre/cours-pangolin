@@ -2,6 +2,10 @@
 # À lancer en root sur ta LXC de lab.
 set -e
 
+# Sans lsb-release, l'installeur écrit un dépôt Docker invalide et Docker n'est pas installé.
+apt-get update -qq && apt-get install -y -qq lsb-release >/dev/null
+curl -fsSL https://get.docker.com | sh
+
 # Le template désactive l'auth par mot de passe SSH par défaut.
 sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
